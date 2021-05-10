@@ -140,6 +140,159 @@ git push - қосылған әрекеттерді интернетке жүкт
 
 
 
+5 қадам - Жаңа папка құрамыз және соның ішіне class library құрамыз
+
+Console арқылы
+
+Console бұйрығы
+
+md - жаңа папка құрады
+мысал
+md domain
+
+сосын
+
+жаңа class library құрамыз
+
+Console бұйрығы
+
+dotnet new classlib --output "domain/Books_Store_Lesson" --name "Books_Store_Lesson"
+
+Сәтті болса келесідей шығады
+
+The template "Class library" was created successfully.
+
+Processing post-creation actions...
+Running 'dotnet restore' on domain/Books_Store_Lesson\Books_Store_Lesson.csproj...
+  Determining projects to restore...
+  Restored C:\Users\berkut001\source\vsprojects\ASP\books_store_lesson\domain\Books_Store_Lesson\Books_Store_Lesson.cspr
+oj (in 209 ms).
+Restore succeeded.
+
+
+Solution- жай мәтіндік файл
+
+Solution-ға жаңа құрған Class library-ді қосамыз
+
+не екенің түсінбедім 
+Console бұйрығы
+dotnet sln add domain/Books_Store_Lesson\Books_Store_Lesson.csproj
+
+сәтті болса келесідей шығады
+
+Project `domain\Books_Store_Lesson\Books_Store_Lesson.csproj` added to the solution.
+
+не екенің түсінбедім 
+Console бұйрығы
+type Books_Store_Lesson.sln
+
+
+
+
+Visual Studio-ны ашып 
+
+Books_Store_Lesson.sln 
+
+Solution-ды таңдап ашамыз
+
+
+ашылған project-тін ішіндегі class1 дегенге кіріп class1-таңдап
+ ctrl + r + r деп атын Book деп өзгертеміз
+
+
+
+
+
+
+
+
+6 қадам - Book class-та -  Келушы кітапты атымен іздейді
+
+!!!#1 Алғашқы мәселе - Мәселе тақырыбы: Келушы кітапты атымен іздейді
+
+Алғашқы мәселе жөңінде кітапқа нелер керек
+
+1. Қайталанбайтын сан - Id
+2. Кітап аты - Title
+
+public class Book
+{
+   #region Getters
+
+   public int Id { get; }
+   public string Title { get; }
+
+   #endregion Getters
+
+   #region Constructor
+
+    public Book(int id, string title)
+    {
+        this.Id = id;
+        this.Title = title;
+    }
+
+    #endregion Constructor
+
+}
+
+
+
+git бұйрықтары
+
+git add .
+git status
+
+Сәтті болса
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   books_store_lesson.sln
+        new file:   domain/Books_Store_Lesson/Book.cs
+        new file:   domain/Books_Store_Lesson/Books_Store_Lesson.csproj
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
