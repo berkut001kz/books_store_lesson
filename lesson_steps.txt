@@ -101,6 +101,8 @@ license қосып мәнің The Unlicense деп таңдап, құру бат
 Console арқылы
 git бұйрықтары:
 
+
+
 git status - githup-қа қосылмаған әрекеттерді көрсетеді
 
 1. Қосылмаған әрекеттерді қызыл жазумен көрсетеді 
@@ -110,14 +112,25 @@ Untracked files:
         books_store_lesson.sln
 
 
+
+
 git add . - githup-қа қосылмаған әрекеттерді қосады
 
-1. Қосылған әрекеттірді жасыл жазмен көрсетеді
+1. Қосылған әрекеттірді жасыл жазумен көрсетеді
 Мысал:
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
         new file:   books_store_lesson.sln
 
+
+
+git commit -m - Қосылатын жаңа әрекетке пікір жазады
+
+мысал:
+git commit -m "Шешім жасаңыз"
+
+
+git push - қосылған әрекеттерді интернетке жүктейді яғни githup-қа
 
 
 
