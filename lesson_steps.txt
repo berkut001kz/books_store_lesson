@@ -277,13 +277,93 @@ public interface IBookRepository
 
 
 
+git add .
+git commit -m "Interface құрдық аты IBookRepository"
+git push
 
 
 
 
 
+8 қадам - жаңа solution папкасын құрамыз - Visual Studio арқылы
+
+Visual Studio арқылы
+
+ең бірінші solution папкасының үстінең
+тышқанның оң жағын басып Add -ға cursor-ды апарғанда шығады
+
+New Solution Folder  - дегенді таңдып
+
+атын infrastructure деп қойамыз
 
 
+
+9 қадам - жаңа solution infrastructure папкасының ішіне жаңа class library қосамыз
+
+class library - өздігінен іске қосыла алмайды
+
+
+infrastructure үстіне барып 
+тышқанның оң жағын басып Add - new project таңдап ішінең 
+
+class library таңдап атын Books_Store_Lesson.Memory деп қойып 
+
+орның ...\books_store_lesson\infrastructure осылай көрсетіп
+
+құрамыз
+
+
+ашылған жаңа project-тін ішіндегі class атын class1 дегенді үстінең ctrl+r+r деп 
+BookRepository деп өзгертеміз
+
+
+
+сосын IBookRepository interface-ті мұра етіп аламыз
+
+алайда қате шығады себебі IBookRepository interface-сі басқа books_store_lesson project-тын ішінде
+
+енді екеуін байланыстыру керек бір-бірін көруі үшін
+
+Байланыстыру
+
+Books_Store_Lesson.Memory ішіндегі 
+Dependencies дегеннің үстінең тышқанның оң жағын басып
+Add Project Reference  дегенді таңдап соның ішіндегі
+Projects дегенге кіріп ішіндегі керекті project-ті таңдап OK батырмасын басамыз
+
+сосын
+
+Books_Store_Lesson.Memory.csproj дегеннің ішіне осындай жазу қосылады
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\domain\Books_Store_Lesson\Books_Store_Lesson.csproj" />
+  </ItemGroup>
+
+
+Бәрі сәтті болса келесідей жазамыз
+
+Where - using System.Linq; арқылы істейді
+using System.Linq;
+
+    public class BookRepository : IBookRepository
+    {
+
+        private readonly Book[] books = new[]
+        {
+            new Book(1,"Art Of Programming"),
+            new Book(2,"Refactoring"),
+            new Book(3,"C Programming Language"),
+        };
+
+
+        public Book[] GetAllByTitle(string titlePart)
+        {
+            // Where(book => book.Title.Contains(titlePart)) - true немесе false қайтарады
+            // Where(book => book.Title.Contains(titlePart)) - егер Programming сөзі біррет немесе оданда көп кезіксе true қайтарады
+            // .ToArray(); - қайтадан тізбек түрінде қайтарады
+            return books.Where(book => book.Title.Contains(titlePart)).ToArray();
+        }
+    }
 
 
 
