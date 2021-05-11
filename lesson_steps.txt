@@ -237,6 +237,7 @@ public class Book
 }
 
 
+соңғы өзгерістерді сақтаймыз
 
 git бұйрықтары
 
@@ -249,6 +250,39 @@ Changes to be committed:
         modified:   books_store_lesson.sln
         new file:   domain/Books_Store_Lesson/Book.cs
         new file:   domain/Books_Store_Lesson/Books_Store_Lesson.csproj
+
+git commit -m "Book class-тын жеке ақпаратын анықтадық"
+
+git push
+
+
+
+
+
+
+
+
+
+
+
+7 қадам - Interface құрамыз
+
+атын IBookRepository деп қойамыз
+
+
+public interface IBookRepository
+    {
+        Book[] GetAllByTitle(string titlePart);
+    }
+
+
+
+
+
+
+
+
+
 
 
 
