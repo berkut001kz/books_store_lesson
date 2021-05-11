@@ -39,6 +39,12 @@ license қосып мәнің The Unlicense деп таңдап, құру бат
 
 
 
+
+
+
+
+
+
 3 қадам - Не істейтінімізді аңықтап аламыз - алғашқы мәселе
 
 	github-та әңгіме құруға болатын жер Issues(Мәселелер) бөлімі бар
@@ -140,6 +146,14 @@ git push - қосылған әрекеттерді интернетке жүкт
 
 
 
+
+
+
+
+
+
+
+
 5 қадам - Жаңа папка құрамыз және соның ішіне class library құрамыз
 
 Console арқылы
@@ -198,6 +212,13 @@ Solution-ды таңдап ашамыз
 
 ашылған project-тін ішіндегі class1 дегенге кіріп class1-таңдап
  ctrl + r + r деп атын Book деп өзгертеміз
+
+
+
+
+
+
+
 
 
 
@@ -285,6 +306,16 @@ git push
 
 
 
+
+
+
+
+
+
+
+
+
+
 8 қадам - жаңа solution папкасын құрамыз - Visual Studio арқылы
 
 Visual Studio арқылы
@@ -295,6 +326,19 @@ Visual Studio арқылы
 New Solution Folder  - дегенді таңдып
 
 атын infrastructure деп қойамыз
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -364,6 +408,104 @@ using System.Linq;
             return books.Where(book => book.Title.Contains(titlePart)).ToArray();
         }
     }
+
+
+
+Соңғы өзгерістерді сақтаймыз
+
+ git add .
+ git status
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+ modified:   books_store_lesson.sln
+ new file:   infrastructure/Books_Store_Lesson.Memory/BookRepository.cs
+ new file:   infrastructure/Books_Store_Lesson.Memory/Books_Store_Lesson.Memory.csproj
+
+ git commit -m "Book Repository - Кітап қоймасының орындалуын жадқа қосыңыз"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+10 қадам - view(көрініс) project-ті құрамыз
+
+
+сайтта көзге көрінетін бөлігі 
+мысалы:
+html,css,js, т.б
+
+
+жаңадан solution folder құрамыз атын presentation деп қойамыз
+
+presentation үстіне апарып тышқанның оң жағын басып Add ішінең New Project таңдап
+
+ішінең
+
+ASP.NET Core Web App(Model-View-Controller) таңдап
+
+атын Books_Store_Lesson.Web деп қойып 
+орның ...\books_store_lesson\presentation деп көрсетіп
+жаңадан Project құрамыз
+
+
+сосын 
+
+Books_Store_Lesson.Web үстіне апарып тышқанның оң жағын басап 
+
+Set as Startup Project дегенді басамыз
+
+басқаннаң кейін еш әрекет болмаған сияқты болады 
+
+
+алдынғы екі Project өздігінең іске қосыла алмаса осы Project өздігінең қосыла алады
+
+қосқанда браузерге ақпарат шығарады
+
+
+Қосатын жерде жасыл үшбұрышта IIS Express деп тұру керек соны басамыз 
+егер Docer немесе басқа жазу болса онда оны IIS Express деп таңдап алу керек 
+сосын қосамыз қосқанда браузер ашылады
+
+Браузер ашылып 
+
+Welcome
+Learn about building Web apps with ASP.NET Core.
+
+деген сөз көрсеңіз сәтті болғаны
+
+еңді соңғы өзгерістерді сақтаймыз
+
+git add .
+git status 
+git commit -m "Веб-қосымша жасаңыз"
+git push
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
