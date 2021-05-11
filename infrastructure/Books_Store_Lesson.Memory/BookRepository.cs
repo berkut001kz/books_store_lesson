@@ -26,6 +26,7 @@ namespace Books_Store_Lesson.Memory
             // Where(book => book.Title.Contains(titlePart)) - true немесе false қайтарады
             // Where(book => book.Title.Contains(titlePart)) - егер Programming сөзі біррет немесе оданда көп кезіксе true қайтарады
             // .ToArray(); - қайтадан тізбек түрінде қайтарады
+
             return books.Where(book => book.Title.Contains(titlePart)).ToArray();
         }
     }
