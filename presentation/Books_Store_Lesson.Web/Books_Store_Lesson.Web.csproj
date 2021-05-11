@@ -9,6 +9,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\domain\Books_Store_Lesson\Books_Store_Lesson.csproj" />
+    <ProjectReference Include="..\..\infrastructure\Books_Store_Lesson.Memory\Books_Store_Lesson.Memory.csproj" />
   </ItemGroup>
 
 </Project>

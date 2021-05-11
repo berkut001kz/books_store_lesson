@@ -437,7 +437,7 @@ Changes to be committed:
 
 
 
-10 қадам - view(көрініс) project-ті құрамыз
+10 қадам - веб-қосымша project-ті құрамыз
 
 
 сайтта көзге көрінетін бөлігі 
@@ -489,6 +489,183 @@ git add .
 git status 
 git commit -m "Веб-қосымша жасаңыз"
 git push
+
+
+
+
+
+
+11 қадам - веб-қосымшасына өзгеріс жасау
+
+1. Views/Home/index.cshtml файлына
+
+іздеу формасын қосу
+
+<form action="/search" method="get">
+    <input type="text" name="query"/>
+    <button name="submit">Іздеу</button>
+</form>
+
+form істеу үшін
+
+Controller қосу керек
+Controller аты осыған ұқсауы керек - action="/search" = search
+
+
+2.Controller/
+
+Controller папкасына барып тышқанның оң жағын басып 
+Add дегеннің ішінең Controller дегенді таңдап
+
+оның ішінең MVC Controller - Empty дегенің таңдап Add басамыз
+
+сосын атын еңгізетін шығады 
+соған атын береміз SearchController деп сосын Add басып қосамыз
+
+
+SearchController ішіне келесідей жазамыз
+
+public class SearchController : Controller
+    {
+        private readonly IBookRepository bookRepository;
+
+        public SearchController(IBookRepository bookRepository)
+        {
+            this.bookRepository = bookRepository;
+        }
+
+        public IActionResult Index(string query)
+        {
+            var books = bookRepository.GetAllByTitle(query);
+            return View(books);
+        }
+    }
+
+
+еңді қоспақ болсақ қате шығады себебі IBookRepository-ді көрмей тұр
+IBookRepository басқа Project-те болғандықтан 
+
+осы мәселені шешу үшін 
+
+IBookRepository тұрған Project-ті байланыстыру керек
+
+ол келесідей
+
+Байланыстыру
+
+Books_Store_Lesson.Web ішіндегі 
+Dependencies дегеннің үстінең тышқанның оң жағын басып
+Add Project Reference  дегенді таңдап соның ішіндегі
+Projects дегенге кіріп ішіндегі керекті project-ті таңдап OK батырмасын басамыз
+қазір керекті Project Books_Store_Lesson 
+
+
+Енді қате кетсе бәрі дұрыс болғаны
+
+
+Еңді жаңадан парақша құру керек іздеу нәтижесін көрсететін
+
+ол үшін 
+SearchController ішіндегі 
+
+
+public IActionResult Index(string query)
+        {
+            var books = bookRepository.GetAllByTitle(query);
+            return View(books);
+        }
+
+осының 
+
+View деген жазуға апарып тышқанның оң жағын басып
+
+Add View дегенді басып
+
+соның ішінең Razor View - дегенді таңдап 
+келесідей жасау қажет
+
+View name: Index
+Template: - дегенге List деп таңдап
+Model class: дегенге Book(Books_Store_Lesson) class-сын таңдау қажет
+
+
+қалғанына тиіспей add батырмасын басу керек
+
+сосын автоматты 
+
+Views/ папкасының ішіне жаңадан
+
+Search деген папка құрып ішіне жаңадан index.cshtml деген файл құрып береді
+
+index.cshtml ішіне өзі автоматты дизайн жазып қойады
+
+
+еңді project-ті қосып көрейік
+
+
+браузер ашылғаннаң кейін біз жазған іздеуге Programming деп жазып
+іздеу батырмасын бассақ қате шығады
+
+
+себебі біз IBookRepository Interface-сын қолданып нәтиже шығар дедік бірақ
+біз оны нақтылы тіркемедік сондақтаң қате шықты
+
+
+Тіркеу үшін Startup.cs ға кіріп 
+
+ConfigureServices деген әдістін ішіне тіркейміз тіркеу келесідей
+
+services.AddSingleton<IBookRepository, BookRepository>();
+
+Осылай жазғансон BookRepository-ден қате шығады себебі оны көрмей тұр
+
+көру ішін байланыстыру керек 
+
+
+Байланыстыру
+
+Books_Store_Lesson.Web ішіндегі 
+Dependencies дегеннің үстінең тышқанның оң жағын басып
+Add Project Reference  дегенді таңдап соның ішіндегі
+Projects дегенге кіріп ішіндегі керекті project-ті таңдап OK батырмасын басамыз
+қазір керекті Project Books_Store_Lesson.Memory
+
+
+
+Байланыстырғаннаң кейін 
+
+using Books_Store_Lesson.Memory; 
+
+деп шақыру қажет
+
+
+сосын қате шықпауы керек
+
+
+
+еңді Project-ті қосып көрейік және іздеп көрейік
+
+
+браузер ашылғаннаң кейін 
+іздеуге Programming деп жазып
+іздеу батырмасын басайық
+
+.......
+.......
+
+Сәтті болды 2 нәтиже шығарды ура
+
+
+
+
+Соңғы өзгерістерді сақтайық
+
+git status
+git add .
+git commit -m "Іздеу бетін қосыңыз"
+git push
+
+
 
 
 
