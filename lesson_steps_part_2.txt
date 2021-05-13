@@ -652,6 +652,10 @@ namespace Books_Store_Lesson.Memory
 
 Бәрі сәтті аяқталды
 
+"ISBN және Автор іздеуін жасадық
+
+
+
 
 
 
