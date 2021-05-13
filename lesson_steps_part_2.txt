@@ -50,26 +50,6 @@ git pull
 
 сосын
 
-git checkout -t original/features/search_by_isbn_author
-
-
-өзгерді
-
-мен master арқылы сосны сақтап алып сосын өзгертемін
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
