@@ -19,7 +19,7 @@ namespace Books_Store_Lesson
             if (Book.IsIsbn(query))
                 return bookRepository.GetAllByIsbn(query);
             else
-                return bookRepository.GetAllByTitleOrAuthor(query);
+                return bookRepository.GetAllByTitleOrAuthor(query); 
         }
 
         

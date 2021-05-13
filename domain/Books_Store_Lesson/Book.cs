@@ -22,7 +22,7 @@ namespace Books_Store_Lesson
         {
             this.Id = id;
             this.Isbn = isbn;
-            this.Author = author;
+            this.Author = author; 
             this.Title = title;
         }
 
