@@ -59,6 +59,402 @@ git checkout -t origin/features/search_by_isbn_author
 
 
 
+Visual Studio-ға кіріп Project-ке кіремім
+
+Book class-сына 
+1. Сатып алушы кітапты ISBN немесе Авторы арқылы іздейді - оқиғаға сәйкес келетін өрістерді қосамыз
+
+1. ISBN тек оқуға болатын етіп қосамыз
+2. Author(Авторы)тек оқуға болатын етіп қосамыз
+
+
+public string Isbn { get; }
+
+public string Author { get; }
+
+Және Constructor-ға қосамыз 
+
+public Book(int id,string isbn,string author, string title)
+        {
+	    this.Id = id;
+            this.Isbn = isbn; 
+            this.Author = author;
+            this.Title = title;
+        }
+
+
+Constructor өзгерді еңді constructor-ды шақырған жердін бәрін өзгертіп шығамыз
+
+біз тек constructor-ді біррет қана шақырдық ол Books_Store_Lesson.Memory Project-тің ішінде BookRepository class-сында books тізбегінде шықырылған 
+оны келесідей өзгертеміз:
+
+private readonly Book[] books = new[]
+        {
+            new Book(1, "ISBN 12345-54321","D. Knuth", "Art Of Programming"),
+            new Book(2, "ISBN 12345-54322","M. Fowler", "Refactoring"),
+            new Book(3, "ISBN 12345-54323","B. Kernighan, D. Ritchie", "C Programming Language"),
+        };
+
+Бұл тізбек уақытша жазылған кейін деректер базасы қосылғанда жойамыз
+
+
+Еңді Books_Store_Lesson Project-ке кіреміз сосын IBookRepository class-сын ашамыз
+
+оның ішінде Кітапты аты бойынша қайтаратын әдіс жазылған
+
+Book[] GetAllByTitle(string titlePart);
+
+
+Еңді қызықты сұрақ туындайды 
+
+біз 3 түрлі айнамалыны қалай іздейміз
+1. Кітап аты бойынша
+2. Кітаптын ISBN бойынша - ISBN деген қайталанбайтын кітап нөмері 11саннаң тұратын
+3. Кітаптын авторы арқылы
+
+
+
+1-ші тәсіл 
+
+Әр айнамалыға бір-бірден іздеу өрісін жасау арқылы - ол тәсіл бойынша жасау бағдарламашыға оңай болса Пайдаланушыға ыңғайсыз болады
+қай өріске еңгізсе соған байланысты іздейді
+1. Кітап аты айнамалысының іздеу өрісіне жазса кітап аты бойынша іздейді және сол сияқты басқалары
+
+
+
+
+
+2-ші тәсіл  
+
+Бір іздеу өрінең үшеуінде іздеу арқылы - ол тәсіл бойынша жасау бағдарламашыға қыйын болса Пайдаланушыға ыңғайлы болады
+
+Еңді сұрақ: оны қалай жасаймыз?
+
+1) Бізге сервер өзі пайдаланушы не бойынша іздегенің аңықтайтын етіп жасау керек
+
+Алдымен 2 әдіс жазамыз 
+
+1. ISBN қайтаратын тізбекті әдіс
+2. Аты немесе авторын қайтаратын тізбекті әдіс
+
+оны біз IBookRepository class-сының ішіне жазамыз
+
+бұрын жазылған Атын қайтаратын әдісті жойып жаңадан 2 әдіс жазамыз
+
+namespace Books_Store_Lesson
+{
+    public interface IBookRepository
+    {
+        Book[] GetAllByIsbn(string isbn);
+        Book[] GetAllByTitleOrAuthor(string titleOrAuthor);
+    }
+}
+
+
+Еңді сұрақ туындайды: кім шешім қабылдайды ненің не екенің аңықтау үшін
+
+Ол мәселені шешу үшін Service(Қызмет) не екенің аңықтап сол арқылы істеу қажет
+
+Service ештеме сақтамайды ол сұранысты өңдеп шешім қабылдайды сосын мәнің қайтарады
+
+Қазір кітап үшін бір Service(Қызмет) құрамыз
+
+Books_Store_Lesson Project-тың ішіне
+
+Жаңадан class құрып атын BookService деп қойамыз
+
+BookService class-тын ішіне жаңадан барлық сұраныстарды қайтаратын әдіс жасаймыз
+
+
+namespace Books_Store_Lesson
+{
+    class BookService
+    {
+        public Book[] GetAllByQuery(string query)
+        {
+            throw new NotImplementedException(); // Ешқандай мән қайтармайды
+        }
+    }
+}
+
+Әдісімізді қазірше ешқаңдай мән қайтармайтындай етіп жазып қойамыз
+
+SearchController class-сында
+Еңді біз IBookRepository class-сымен жұмыстемейміз еңді BookService class-сымен жұмыстейміз
+
+Еңді BookService шақырамыз
+Books_Store_Lesson.Web Project-тын ішіндегі 
+Controllers папкасындағы 
+SearchController class-сындағы іздеуді атқаратын әдісіне шақырамыз
+
+SearchController class-сын келесідей өзгертеміз:
+
+namespace Books_Store_Lesson.Web.Controllers
+{
+    public class SearchController : Controller
+    {
+        private readonly BookService bookService;
+
+        public SearchController(BookService bookService)
+        {
+            this.bookService = bookService;
+        }
+
+        public IActionResult Index(string query)
+        {
+            var books = bookService.GetAllByQuery(query);
+            return View(books);
+        }
+    }
+}
+
+
+var books = bookService.GetAllByQuery(query); - қыйын логиканы жасырады соңдықтан біз Service-ты жасадық
+
+Пайдаланушы сұраныс жібереді біз оны Service-ке жібереміз 
+Service сұранысты өңдейді 
+сосын ол айтады
+Егер ол ISBN болса ол бір әдіс шақырады ал олай болмаса Аты немесе Авторы болса ол басқа әдісті шақырады
+
+
+
+
+Еңді Қазір Тест жасауға қолайлы болды 
+
+Тест жеке Project-ке құралады 
+неге?
+себебі: Бағдарламашыларға тест керек бірақ пайдаланушыларға керек емес соңдықтаң тестті жеке сақтаймыз кейін бөлім алуға оңай болуы үшін
+
+Тест құру
+
+domain папкасының үстінең тышқанның оң жағын басып Add дегеннің ішінең new project дегенді басамыз
+
+сосын ашылған беттегі 
+
+All Languages дегенге C# деп таңдап All Project Type дегенге Test деп таңдаймыз
+
+шыққан нәтижелардін ішінең 
+
+xUnit Test Project дегенді таңдаймыз
+сосын атын Books_Store_Lesson.Tests деп 
+түрған орның көрсетеміз ....\books_store_lesson\domain
+
+
+Next батырмасын басап сосын Create батырмасын басып құрамыз
+
+
+
+
+Books_Store_Lesson Project-ке өзгеріс
+
+
+namespace Books_Store_Lesson
+{
+    public class BookService
+    {
+
+        private readonly IBookRepository bookRepository;
+
+        public BookService(IBookRepository bookRepository)
+        {
+            this.bookRepository = bookRepository;
+        }
+
+        public Book[] GetAllByQuery(string query)
+        {
+            if (Book.IsIsbn(query))
+                return bookRepository.GetAllByIsbn(query);
+            else
+                return bookRepository.GetAllByTitleOrAuthor(query);
+        }
+
+        
+
+    }
+}
+
+
+және 
+
+
+namespace Books_Store_Lesson
+{
+    public class Book
+    {
+        #region Getters
+
+        ..............
+
+        #endregion Getters
+
+        #region Constructor
+	............
+        #endregion Constructor
+
+
+        internal static bool IsIsbn(string s)
+        {
+            return false;
+        }
+
+    }
+}
+
+
+
+
+
+Еңді тест project-ке барып class атын екі рет жылдап басып ctrl+r+r деп class-тын атын BookTests деп өзгертеміз
+
+BookTests class-сында тек Book class-сы бойынша ғана тест жасаймыз
+
+Еңді әдістін атын өзгертеміз 
+
+нәтиже:
+namespace Books_Store_Lesson.Tests
+{
+    public class BookTests
+    {
+        [Fact]
+        public void IsIsbn_WithNull_ReturnFalse()
+        {
+	  //Біз нені тексереміз біз book class-сындағы IsIsbn әдісін тексереміз 
+		//IsIsbn әдісі False қайтаруы қажет
+
+		bool actual = Book.IsIsbn(null); // Books_Store_Lesson Project-ті Books_Store_Lesson.Tests-ке байланыстыру қажет
+
+		//Байланыстырғаннаң кейін Book class-сын көреді алайда 
+		//IsIsbn әдісін көрсейді себебі біз оны internal деп шектеп қойдық 
+		//internal-дын пайдасы қаңдай ол басқа Project-терге көрінбейтін етеді ақпаратты қорғау үшін 
+		//Бізге Тест Project-ке көрінетін етіп жасаймыз себебі біз тест арқылы тексеріп отыру үшін бізге көрінуі керек
+		//Еңді оны тек тест Project-ке көрінуі үшін келесідей жасаймыз
+
+		/*
+		
+
+        }
+    }
+}
+
+Books_Store_Lesson Project-тің үстінең тышқанның оң жағын басып Add дегеннің ішінең new Item дегенді басамыз
+Ашылған беттен Code File дегенді тауып соны таңдап
+атын AssemblyProperties деп жазып Add батырмасын басып құрамыз
+
+		Code File - деген код жазуға арналған бос құжат
+		ашылған бетке бізге керек attribute жазамыз
+
+AssemblyProperties ішіне
+
+		using System.Runtime.CompilerServices;
+		//attribute
+		[assembly:InternalsVisibleTo("Books_Store_Lesson.Tests")]
+
+		//Осылай жазғаннаң кейін  Books_Store_Lesson.Tests Project-ке internal арқылы жазылған әдістер көрінетін болады
+
+
+Алғашқы тестті жаздық
+namespace Books_Store_Lesson.Tests
+{
+    public class BookTests
+    {
+        [Fact]
+        public void IsIsbn_WithNull_ReturnFalse() // Тестті іске қосу ішін әдістін үстінең тышқаннаң оң жағын басып Run Test(s) дегенді басамыз шыққан терезені ыңғайлы етіп сол жаққа қойып аламыз
+        {
+            bool actual = Book.IsIsbn(null);
+            Assert.False(actual);
+        }
+    }
+}
+
+
+//Өзгерттік
+namespace Books_Store_Lesson.Tests
+{
+    public class BookTests
+    {
+        [Fact]
+        public void IsIsbn_WithNull_ReturnFalse() // Null болса false қайтаруы қажет
+        {
+            bool actual = Book.IsIsbn(null);
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public void IsIsbn_WithBlankString_ReturnFalse() // Бос өріс болса false қайтаруы қажет
+        {
+            bool actual = Book.IsIsbn("  ");
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public void IsIsbn_WithInvalidIsbn_ReturnFalse() // Isbn Invalid болса false қайтаруы қажет
+        {
+            bool actual = Book.IsIsbn("ISBN 123");// Мысалы: Ол ISBN деп басталады бірақ 10немесе11 сан болмаса
+            Assert.False(actual);
+        }
+    }
+}
+
+Еңді тестті қоссақ ол бәрін дұрыс дейді себебі IsIsbn әдісінде false қайтар деп жазып қойғанбыз
+
+
+
+
+Келесідей өзгерістер жасаймыз
+
+namespace Books_Store_Lesson.Tests
+{
+    public class BookTests
+    {
+        [Fact]
+        public void IsIsbn_WithNull_ReturnFalse() // Null болса false қайтаруы қажет
+        {
+            bool actual = Book.IsIsbn(null);
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public void IsIsbn_WithBlankString_ReturnFalse() // Бос өріс болса false қайтаруы қажет
+        {
+            bool actual = Book.IsIsbn("  ");
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public void IsIsbn_WithInvalidIsbn_ReturnFalse() // Isbn Invalid болса false қайтаруы қажет
+        {
+            bool actual = Book.IsIsbn("ISBN 123");// Мысалы: Ол ISBN деп басталады бірақ 10 немесе 11 сан болмаса
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public void IsIsbn_WithIsbn10_ReturnTrue() // Isbn 10сан болса true қайтаруы қажет
+        {
+            //Isbn деген сөз кіші әріппен жазылсада үлкен әріппен жазылсада бәрі-бір бастысы Isbn деп басталуы қажет
+            //және 10сан болуы керек 
+            // егер солай болса онда True қайтаруы қажет
+            bool actual = Book.IsIsbn("ISBN 123-456-789 0");
+            Assert.True(actual);
+        }
+
+        [Fact]
+        public void IsIsbn_WithIsbn13_ReturnTrue() // Isbn 13сан болса true қайтаруы қажет
+        {
+            //Isbn деген сөз кіші әріппен жазылсада үлкен әріппен жазылсада бәрі-бір бастысы Isbn деп басталуы қажет
+            //және 10сан болуы керек 
+            // егер солай болса онда True қайтаруы қажет
+            bool actual = Book.IsIsbn("ISBN 123-456-789 0123");
+            Assert.True(actual);
+        }
+
+        [Fact]
+        public void IsIsbn_WithTrashStart_ReturnFalse()
+        {
+            bool actual = Book.IsIsbn("yyy ISBN 123-456-789 0123 yyy");
+            Assert.False(actual);
+        }
+    }
+}
 
 
 
@@ -70,6 +466,191 @@ git checkout -t origin/features/search_by_isbn_author
 
 
 
+
+
+
+public class Book
+    {
+        #region Getters
+	.............
+        #endregion Getters
+
+        #region Constructor
+	.............
+        #endregion Constructor
+
+
+        internal static bool IsIsbn(string s)
+        {
+
+            if (s == null) return false;
+            s = s.Replace("-", "")
+                .Replace(" ", "")
+                .ToUpper();
+
+            return Regex.IsMatch(s, "^ISBN\\d{10}(\\d{3})?$"); // Қайтаратын нәтижесі true егер осылай болса ISBN1234567890 кезгелген 10сан егер басқалай болған жағдайда false болады
+            /*
+             * "^ISBN\\d{10}(\\d{3})?$" - Осыған түсінік
+             * ^ISBN - ISBN осы сөздін алдында басқа әріп болмауы керек
+             * \\d{10} - деген нақты 10 сан болуы қажет дегені
+             * (\\d{3})? - 10 саннаң көп болса тағы 3 саң болуы мүмкін дегенді білдіреді
+             * \\d{10}(\\d{3})? - 10 сан немесе 13 болуы қажет деген сөз басқалай болмайды 
+             * $ - соңында ештеме болмауы керек деген сөз
+                */
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+Біз тестті IsIsbn әдісі үшін жаздық 
+
+
+
+Еңді BookService class-сы үшін жаңа тест class-сын құрамыз 
+атын BookServiceTests деп қойамыз
+
+Осылай жазамыз
+namespace Books_Store_Lesson.Tests
+{
+    public class BookServiceTests
+    {
+        [Fact]
+        public void GetAllByQuery_WithIsbn_CalsGetAllByIsbn()
+        {
+		Еңді бір қыйын мәселе бар оны шешудін екі болы бар 
+		1. Қолымен жазып шығу
+		2. Дайын плагин қолдану
+
+		сабақта 2-ші жолды таңдада уақыттын қысқалығынаң 
+		1-ші жолын кейін көрсетімін деді 
+
+		Еңді 2-ші жол арқылы плагинды жүктеп аламыз жүктеу үшін
+		Books_Store_Lesson.Tests Project-тын үстіннең тышқанның оң жағын басып 
+		Manage NuGet Packages дегенді басамыз 
+		Ашылған бетке Brawse дегенге кіріп іздеуге Moq деп жазып 
+		Табылған Moq плагинды жүктеп аламыз
+        }
+    }
+}
+
+Moq-ты пайдаланамыз
+
+using Moq;
+using Xunit;
+
+namespace Books_Store_Lesson.Tests
+{
+    public class BookServiceTests
+    {
+        [Fact]
+        public void GetAllByQuery_WithIsbn_CalsGetAllByIsbn()
+        {
+            var bookRepositoryStup = new Mock<IBookRepository>();
+            bookRepositoryStup.Setup(x => x.GetAllByIsbn(It.IsAny<string>()))
+                              .Returns(new[] { new Book(1, "", "", "")});
+        }
+    }
+}
+
+
+
+
+
+
+
+
+namespace Books_Store_Lesson.Tests
+{
+    public class BookServiceTests
+    {
+        [Fact]
+        public void GetAllByQuery_WithIsbn_CalsGetAllByIsbn()
+        {
+            var bookRepositoryStup = new Mock<IBookRepository>();
+            bookRepositoryStup.Setup(x => x.GetAllByIsbn(It.IsAny<string>()))
+                              .Returns(new[] { new Book(1, "", "", "")});
+
+            bookRepositoryStup.Setup(x => x.GetAllByTitleOrAuthor(It.IsAny<string>()))
+                              .Returns(new[] { new Book(2, "", "", "") });
+
+            var bookService = new BookService(bookRepositoryStup.Object);
+
+            var actual = bookService.GetAllByQuery("ISBN 12345-67890");
+            Assert.Collection(actual, book => Assert.Equal(1, book.Id));
+        }
+
+        [Fact]
+        public void GetAllByQuery_WithIsbn_CalsGetAllByTitleOrAuthor()
+        {
+            var bookRepositoryStup = new Mock<IBookRepository>();
+            bookRepositoryStup.Setup(x => x.GetAllByIsbn(It.IsAny<string>()))
+                              .Returns(new[] { new Book(1, "", "", "") });
+
+            bookRepositoryStup.Setup(x => x.GetAllByTitleOrAuthor(It.IsAny<string>()))
+                              .Returns(new[] { new Book(2, "", "", "") });
+
+            var bookService = new BookService(bookRepositoryStup.Object);
+
+            var actual = bookService.GetAllByQuery("12345-67890");
+            Assert.Collection(actual, book => Assert.Equal(2, book.Id));
+        }
+    }
+}
+
+namespace Books_Store_Lesson.Memory
+{
+    public class BookRepository : IBookRepository
+    {
+        /// <summary>
+        /// Жаңа кітап қосамыз
+        /// </summary>
+        private readonly Book[] books = new[]
+        {
+            new Book(1, "ISBN 12345-54321","D. Knuth", "Art Of Programming"),
+            new Book(2, "ISBN 12345-54322","M. Fowler", "Refactoring"),
+            new Book(3, "ISBN 12345-54323","B. Kernighan, D. Ritchie", "C Programming Language"),
+        };
+
+        public Book[] GetAllByIsbn(string isbn)
+        {
+            return books.Where(book => book.Isbn == isbn)
+                        .ToArray();
+        }
+
+
+        /// <summary>
+        /// Табылған кітаптарды қайтарады
+        /// </summary>
+        /// <param name="query">Іздеу сөзі</param>
+        /// <returns>Тізбек - Array</returns>
+        public Book[] GetAllByTitleOrAuthor(string query)
+        {
+            // Where(book => book.Title.Contains(titlePart)) - true немесе false қайтарады
+            // Where(book => book.Title.Contains(titlePart)) - егер Programming сөзі біррет немесе оданда көп кезіксе true қайтарады
+            // .ToArray(); - қайтадан тізбек түрінде қайтарады
+
+            return books.Where(book => book.Author.Contains(query)
+                                    || book.Title.Contains(query))
+                        .ToArray();
+        }
+    }
+}
+
+
+Еңді қоссып іздесек қате шығарады себебі біз service-ті тіркемедік
+
+
+Бәрі сәтті аяқталды
 
 
 

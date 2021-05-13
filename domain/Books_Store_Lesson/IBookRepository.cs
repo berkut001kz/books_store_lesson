@@ -9,6 +9,7 @@ namespace Books_Store_Lesson
     // Белгісіз болған жағдайда Interface қажет
     public interface IBookRepository
     {
-        Book[] GetAllByTitle(string titlePart);
+        Book[] GetAllByIsbn(string isbn);
+        Book[] GetAllByTitleOrAuthor(string titleOrAuthor);
     }
 }
