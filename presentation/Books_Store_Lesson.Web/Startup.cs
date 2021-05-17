@@ -1,14 +1,10 @@
-using Books_Store_Lesson.Memory;
+﻿using Books_Store_Lesson.Memory;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Books_Store_Lesson.Web
 {
@@ -25,6 +21,23 @@ namespace Books_Store_Lesson.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            #region Session
+            services.AddDistributedMemoryCache();
+            //
+            services.AddSession(options =>
+            {
+                //Session-ға баптау жасаймыз өз қалауымыз бойынша
+
+                // сақтау уақытының өмірінің ұзақтығы
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+
+            });
+
+            #endregion Session
+
             services.AddSingleton<IBookRepository, BookRepository>();
             services.AddSingleton<BookService>(); 
         }
@@ -48,6 +61,9 @@ namespace Books_Store_Lesson.Web
             app.UseRouting();
 
             app.UseAuthorization();
+
+            //Session тіркеу
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

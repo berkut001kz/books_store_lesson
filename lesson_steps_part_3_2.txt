@@ -1,3 +1,102 @@
 ﻿үшінші сабақ жалғасы 
 
 Сатып алушы кітапты себетке қосады - оқиасын жасаймыз
+
+
+Біз себеттегі тауарды Session-ға сақтаймыз
+
+Session істеуі үшін Startup құжатына баптау жасаймыз
+
+Ескерту: Пайдаланушының жеке құжаттарын немесе сондай рұқсат сұрайтындай ақпараттарды пайдалануының келісімі арқылы ғана сақтау қажет. келісімді сұрайтын арнайы әдіс бар
+
+Startup - құжатына барлық баптауларды жасаймыз Startup құжатты сол үшін арналған
+
+Startup құжатты
+Books_Store_Lesson.Web ішінде
+
+Startup құжаттын ашамыз
+
+Startup құжаттының ішіндегі осы әдісті осылай өзгертеміз
+public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllersWithViews();
+
+            #region Session
+            services.AddDistributedMemoryCache();
+            //
+            services.AddSession(options =>
+            {
+                //Session-ға баптау жасаймыз өз қалауымыз бойынша
+
+                // сақтау уақытының өмірінің ұзақтығы
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+
+            });
+
+            #endregion Session
+
+            services.AddSingleton<IBookRepository, BookRepository>();
+            services.AddSingleton<BookService>(); 
+        }
+
+
+
+
+және
+
+Тіркейміз 
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            //Session тіркеу
+            app.UseSession();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+
+
+
+
+
+Еңді Cart class-сын құрамыз
+
+оны Books_Store_Lesson.Web ішіне
+
+Model папкасының ішіне құрамыз
+
+қалған қадамды githup-тан көр
+
+
+
+
+
+
+
+
+
+
+
