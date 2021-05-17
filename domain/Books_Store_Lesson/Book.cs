@@ -8,25 +8,27 @@ namespace Books_Store_Lesson
         #region Getters
 
         public int Id { get; }
-
         public string Isbn { get; }
-
         public string Author { get; }
         public string Title { get; }
+        public string Description { get; }
+        public decimal Price { get; }
 
         #endregion Getters
 
-        #region Constructor
+        #region Constructors
 
-        public Book(int id,string isbn,string author, string title)
+        public Book(int id,string isbn,string author, string title, string description, decimal price)
         {
             this.Id = id;
             this.Isbn = isbn;
             this.Author = author; 
             this.Title = title;
+            this.Description = description;
+            this.Price = price;
         }
 
-        #endregion Constructor
+        #endregion Constructors
 
 
         internal static bool IsIsbn(string s)

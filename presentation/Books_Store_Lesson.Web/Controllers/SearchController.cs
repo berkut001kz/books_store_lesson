@@ -17,8 +17,13 @@ namespace Books_Store_Lesson.Web.Controllers
 
         public IActionResult Index(string query)
         {
+            //if (query == null || query == " ") return View("Index");
+
             var books = bookService.GetAllByQuery(query);
             return View(books);
+
+            // Аңық түрде көрсету
+            //return View("index", books);
         }
     }
 }
