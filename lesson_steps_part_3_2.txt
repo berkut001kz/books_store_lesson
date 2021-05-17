@@ -1,24 +1,23 @@
-﻿using Books_Store_Lesson.Memory;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
+﻿үшінші сабақ жалғасы 
 
-namespace Books_Store_Lesson.Web
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+Сатып алушы кітапты себетке қосады - оқиасын жасаймыз
 
-        public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+Біз себеттегі тауарды Session-ға сақтаймыз
+
+Session істеуі үшін Startup құжатына баптау жасаймыз
+
+Ескерту: Пайдаланушының жеке құжаттарын немесе сондай рұқсат сұрайтындай ақпараттарды пайдалануының келісімі арқылы ғана сақтау қажет. келісімді сұрайтын арнайы әдіс бар
+
+Startup - құжатына барлық баптауларды жасаймыз Startup құжатты сол үшін арналған
+
+Startup құжатты
+Books_Store_Lesson.Web ішінде
+
+Startup құжаттын ашамыз
+
+Startup құжаттының ішіндегі осы әдісті осылай өзгертеміз
+public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
 
@@ -42,7 +41,13 @@ namespace Books_Store_Lesson.Web
             services.AddSingleton<BookService>(); 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+
+
+және
+
+Тіркейміз 
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -72,5 +77,26 @@ namespace Books_Store_Lesson.Web
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
-    }
-}
+
+
+
+
+
+Еңді Cart class-сын құрамыз
+
+оны Books_Store_Lesson.Web ішіне
+
+Model папкасының ішіне құрамыз
+
+қалған қадамды githup-тан көр
+
+
+
+
+
+
+
+
+
+
+
