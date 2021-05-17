@@ -1,0 +1,377 @@
+﻿Бүгін үшінші сабақта
+
+html құжаттарын реттейміз және тауар себетке түсуін жасаймыз
+
+Сатып алушы кітаптың сипаттамасымен танысады #3 - оқиғасына таға екі оқиға қосамыз
+1. Кітапқа Price өрісін қосамыз.
+2. HTML-ді тазалаймыз.
+
+Html,css,js - дизайн жағын жеке оқиға етіп алуға болмайды, ондайды бір оқиғаға бірге қосып жазамыз
+Пайдаланушы оқиғасында - дизайн жағын елемейді, көрініс жағын араластырмай жасайды
+
+
+Еңді жаңа тег қосамыз 
+Тег - деген жұмыстеп отырған адамдардын бір-біріне кедергі жасамай жұмысына пікір жазып болғансон сақтау үшін керек
+Басында тек бір тег болады main ал біз оқиғаға байланысты жеке тег жасап алып жұмыстеп болған сон жоя саламыз
+
+тег құру 
+githup-та code деген бөлімге кіріп main немесе master деп тұрғанды басамыз ашылған өріске жаңа тег атын жазып құру дегенді басып жасаймыз
+
+қазіргі жағдайда тег атын осылай қойдым
+features/description 
+
+құрғаннаң кейін console-ді ашамыз
+
+cd арқылы Project-тін орнына ауысамыз
+
+git pull -r -деп өзгеріс бар жоғын тексереміз өзгеріс болса сақтап алып сосын жаңа тегті қосамыз
+
+өткен сабақтан қалып қойған тег(features/search_by_isbn_author) бар екен одан master-ге ауысамыз
+
+ауысу - git checkout master 
+
+негізгі тегтің аты master болмаса main болуы керек
+
+ауысқаннаң кейін 
+
+өткен сабақтан қалып қойған тегті(features/search_by_isbn_author) жойамыз
+git remote prune origin
+
+Pruning origin
+URL: https://github.com/berkut001kz/books_store_lesson.git
+ * [pruned] origin/features/search_by_isbn_author
+
+git branch -d features/search_by_isbn_author
+
+Deleted branch features/search_by_isbn_author (was ddea404).
+
+
+
+git status деп бар-жоғын тексереміз
+
+
+
+еңді керек тегке ауысамыз 
+
+git pull -r - деп өзгерістер бар-жоғын тексереміз өзгеріс болса алдымен соны сақтап алып сосын келесідей жаңа тег қосамыз
+
+git checkout -t origin/features/description
+
+Switched to a new branch 'features/description'
+
+
+
+
+Еңді Visual Studio-ны ашып Book class-сына desctiption, price қасиеттерін қосамыз
+
+namespace Books_Store_Lesson
+{
+    public class Book
+    {
+        #region Getters
+
+        public int Id { get; }
+        public string Isbn { get; }
+        public string Author { get; }
+        public string Title { get; }
+        public string Description { get; }
+        public decimal Price { get; }
+
+        #endregion Getters
+
+        #region Constructors
+
+        public Book(int id,string isbn,string author, string title, string description, decimal price)
+        {
+            this.Id = id;
+            this.Isbn = isbn;
+            this.Author = author; 
+            this.Title = title;
+            this.Description = description;
+            this.Price = price;
+        }
+
+	#endregion Constructors
+
+
+
+Constructor өзгергенде Constructor-ды шақырған жерлердін бәрін өзгерту керек
+
+
+namespace Books_Store_Lesson.Memory
+{
+    public class BookRepository : IBookRepository
+    {
+        /// <summary>
+        /// Жаңа кітап қосамыз
+        /// </summary>
+        private readonly Book[] books = new[]
+        {
+            new Book(1, "ISBN 12345-54321","D. Knuth", "Art Of Programming", "Description: Art Of Programming", 7.19m),
+            new Book(2, "ISBN 12345-54322","M. Fowler", "Refactoring", "Description: Refactoring", 12.45m),
+            new Book(3, "ISBN 12345-54323","B. Kernighan, D. Ritchie", "C Programming Language", "Description: C Programming Language", 14.98m),
+        };
+
+
+
+Және Test Project-тегіні өзгертеміз
+
+Books_Store_Lesson.Tests Project-тін ішінде
+
+BookServiceTest class-сындағы
+
+bookRepositoryStup.Setup(x => x.GetAllByIsbn(It.IsAny<string>()))
+                              .Returns(new[] { new Book(1, "", "", "", "", 0m)});
+
+тағы екі өріс қосамыз = , "", 0m
+
+астындағы осыған ұқсастын бәрін осылай өзгертеміз
+
+
+
+
+Еңді іздеу бетін реттейміз
+
+Books_Store_Lesson.Web Project-тін ішіндегі
+
+Views/Search/Index.cshtml
+
+
+@model Book[] - Ортақ құжатқа импорт жасағаннаң кейін осылай қолжетімді болады - ортақ құжат аты _ViewImports.cshtml
+
+@{
+    ViewData["Title"] = "Іздеу нәтижесі";
+}
+
+
+<h1>Іздеу нәтижесі: @Model.Length</h1>
+
+<hr />
+
+@if (Model.Length >= 0)
+{
+    <p>Ештеңе табылмады.</p>
+}
+else
+{
+
+    <ol>
+        @foreach (var book in Model)
+        {
+            <li><a href="@Url.Action("Index", "book", new { id = book.Id })">@book.Title</a></li>
+        }
+    </ol>
+}
+
+
+Импорт жасайтын ортақ құжат
+
+Books_Store_Lesson.Web Project-тін ішіндегі
+Views/_ViewImports.cshtml
+
+
+@using Books_Store_Lesson; - Біз қосқан
+@using Books_Store_Lesson.Web
+@using Books_Store_Lesson.Web.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+
+
+
+Еңді кітаптін кіру бетін жасаймыз ол үшін жаңа Controller қажет
+
+Жаңадан Controller құрамыз 
+
+Books_Store_Lesson.Web Project-тін ішіндегі
+
+Controller деген папканың үстінең тышқанның оң жағын басып Add дегеннің ішіндегі Controller дегенді таңдап ашылған беттегі 
+
+MVC Controller - Empty дегенді тандап Add батырмасын басамыз ашылған бетке 
+Controller атын жазып 
+BookController Add батырмасын басамыз
+
+Ашылған бетке келесідей жазамыз
+
+
+namespace Books_Store_Lesson.Web.Controllers
+{
+    public class BookController : Controller
+    {
+        private readonly IBookRepository bookRepository;
+
+        public BookController(IBookRepository bookRepository)
+        {
+            this.bookRepository = bookRepository;
+        }
+
+        public IActionResult Index(int id)
+        {
+            var book = bookRepository.GetById(id); // GetById() әдісі әлі жоқ қате шығады төменде оны жасаймыз
+
+            return View(book);
+        }
+    }
+}
+
+GetById әдісін жасаймыз
+
+Books_Store_Lesson Project-тын ішінде
+
+namespace Books_Store_Lesson
+{
+    public interface IBookRepository
+    {
+        Book[] GetAllByIsbn(string isbn);
+        Book[] GetAllByTitleOrAuthor(string titleOrAuthor);
+        Book GetById(int id);
+    }
+}
+
+
+
+
+Еңді қате тағы шығады себебі IBookRepository-ді мұраға алған class-тарғада сол әдістін орындалуын жазу қажет
+
+Books_Store_Lesson.Memory Project-тін ішінде
+
+namespace Books_Store_Lesson.Memory
+{
+    public class BookRepository : IBookRepository
+    {
+
+	Бұрынғы әдістердін астына жазамыз
+
+        public Book GetById(int id)
+        {
+            //Single - Ешқашан null қайтармайды
+            //Single - 1 немесе оданда көп элемент болғанда ғана іске қосылады
+            //Single - Ештеңе таппаған жағдайда ........
+            return books.Single(book => book.Id == id);
+        }
+    }
+}
+
+
+Еңді кіру бетіннің шаблоның жасаймыз
+
+Шаблонды осы әдістін атындай жасаймыз
+public IActionResult Index(int id)
+        {
+            var book = bookRepository.GetById(id); // GetById() әдісі әлі жоқ қате шығады төменде оны жасаймыз
+
+            return View(book);
+        }
+
+Автоматты жасау жолы 
+View(book); осы сөздін үстінең тышқанның оң жағын басып Add view дегенді таңдап Razor view дегенді таңдап Add батырмасын басамыз
+
+Өзіміз жасаймыз
+
+Books_Store_Lesson.Web Project-тін ішінде
+
+Views деген папканың ішіне жаңадан Book деген папка құрамыз
+Book папкасының үстінең тышқанның оңжағын басып Add дегеннің ішінең view дегенді басамыз ашылған беттегі Razor view дегенді таңдап add батырмасын басамыз 
+ ашылған бетке 
+
+
+View name: Index
+Template: List
+Model class: Book(Books_Store_Lesson)
+
+Use a layout page таңдап
+
+осылай жазып Add батырмасын басамыз
+
+Ашылған бетке келесідей жазамыз
+
+@model Book
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title</h1>
+
+<p><strong>Author: </strong> @Model.Author</p>
+<p><strong>Descripton: </strong> @Model.Description</p>
+<p><strong>Price: </strong> @Model.Price</p>
+
+
+
+
+
+
+
+
+Еңді барлық парақшаға ортақ html құжатын реттейміз
+
+_Layout.cshtml - Осы құжатта барлық бетте бар элементтер болады
+
+
+<!DOCTYPE html>
+<html lang="kz">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Интернет-магазин кітап дүкені</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Кітап дүкені</a>
+                <form class="form-inline my-2 my-lg-0" action="@Url.Action("Index", "Search")" method="get">
+                    <input class="form-control mr-sm-2" type="search" name="query" placeholder="Авторы н/е Аты"/>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Іздеу</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - Кітап дүкені - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
